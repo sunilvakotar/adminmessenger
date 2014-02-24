@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   	<color name="yellow1">#F9E60E</color>    
+   	<color name="yellow2">#F9F89D</color>    
+   	<color name="orange4">#F7BE45</color>    
+   	<color name="orange5">#F7D896</color>    
+   	<color name="blue2">#19FCDA</color>    
+   	<color name="blue25">#D9F7F2</color>    
+   	<color name="grey05">#ACA899</color>    
+   	<color name="white1">#FFFFFF</color>    
+   	<color name="white2">#DDDDDD</color>
+   	<color name="blue3">#8EA9CC</color>    
+   	<color name="blue33">#CCD6E7</color>
+   	<color name="blueborder">#7092BE</color>
+   	<color name="black">#000000</color>
+   	<color name="red">#990402</color>
+   	<color name="white">#ffffff</color>
+   	<color name="divider">#949694</color>
+   	
+   	<color name="header_blue">#007BC2</color>
+   	<color name="background_color">#A9AfB0</color>
+   	
+   	<!-- List Header HDPI -->
+	<color name="hdpi_list_header_color_black">#000000</color>
+	<color name="hdpi_list_header_font_background_color">#007BC2</color>
+	<!-- <color name="hdpi_list_header_font_background_color">#C8BFE7</color> -->   		
+   	<!-- <color name="hdpi_list_header_font_color">#444444</color> -->
+   	<color name="hdpi_list_header_font_color">#0F2232</color>
+   	<color name="hdpi_list_item_background">#000000</color>
+   	<color name="hdpi_list_item_font_background">#FFFFFF</color>
+   	<color name="hdpi_list_item_font_color">#007BC2</color>
+   	
+</resources>
