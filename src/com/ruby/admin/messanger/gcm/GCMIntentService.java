@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import com.gcmclienttest.MainActivity;
-import com.gcmclienttest.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.ruby.admin.messanger.MessageActivity;
+import com.ruby.admin.messanger.R;
 
 public class GCMIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
@@ -66,7 +66,7 @@ public class GCMIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, MessageActivity.class);
         // set intent so it does not start a new activity
         /*notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);*/
