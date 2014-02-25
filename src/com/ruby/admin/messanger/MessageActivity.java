@@ -6,27 +6,40 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.ruby.admin.messanger.adapter.MessageAdapter;
+import com.ruby.admin.messanger.bean.Message;
+import com.ruby.admin.messanger.db.MessageDataSource;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.gcm.InitGCM;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Sunil Vakotar on 2/24/14.
  */
 public class MessageActivity extends Activity {
 
-    private TextView textView;
     private int userID;
-    private String userName;
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
+
+    private ListView messageListView;
+    private List<Message> messageList = new ArrayList<Message>();
+    private MessageAdapter messageAdapter;
+    private MessageDataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message);
-        new InitGCM().initGcmRegister(MessageActivity.this);
+        messageListView = (ListView) findViewById(R.id.messageList);
 
-        textView = (TextView) findViewById(R.id.msgText);
         registerReceiver(mHandleMessageReceiver, new IntentFilter(
                 CommonUtilities.DISPLAY_MESSAGE_ACTION));
 
@@ -34,13 +47,28 @@ public class MessageActivity extends Activity {
 
         if(extra != null){
             userID = extra != null ? extra.getInt("UserID") : null;
-            userName = extra != null ? extra.getString("UserName") : null;
-
+            new InitGCM().initGcmRegister(MessageActivity.this, userID);
         }
+
+        /*Message message = new Message();
+        message.setMessage("Hello This is first message form Admin.");
+        message.setDate(new Date());
+        messageList.add(message);*/
+
+        dataSource = new MessageDataSource(this);
+        dataSource.open();
+        messageList = dataSource.getAllMessages();
+        messageAdapter = new MessageAdapter(MessageActivity.this, messageList);
+        messageListView.setAdapter(messageAdapter);
+        messageAdapter.notifyDataSetChanged();
 
         String msg = getIntent().getStringExtra("msg");
         if(msg != null){
-            textView.setText(msg);
+            Message newMessage = new Message();
+            newMessage.setDate(dateFormat.format(new Date()));
+            newMessage.setMessage(msg);
+            messageAdapter.addMessage(newMessage);
+            messageAdapter.notifyDataSetChanged();
         }
     }
 
@@ -50,7 +78,7 @@ public class MessageActivity extends Activity {
     private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String newMessage = intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
+            String msg = intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
             // Waking up mobile if it is sleeping
             //WakeLocker.acquire(getApplicationContext());
 
@@ -61,8 +89,13 @@ public class MessageActivity extends Activity {
              * */
 
             // Showing received message
-            textView.setText(newMessage);
-            Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
+            Message newMessage = new Message();
+            newMessage.setDate(dateFormat.format(new Date()));
+            newMessage.setMessage(msg);
+            dataSource.saveMessage(newMessage);
+            messageAdapter.addMessage(newMessage);
+            messageAdapter.notifyDataSetChanged();
+            //Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
 
             // Releasing wake lock
             //WakeLocker.release();

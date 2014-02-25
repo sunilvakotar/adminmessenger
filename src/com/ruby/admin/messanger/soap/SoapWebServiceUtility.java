@@ -26,8 +26,8 @@ public class SoapWebServiceUtility {
 		final DefaultHttpClient httpClient = new DefaultHttpClient();
 		// request parameters
 		HttpParams params = httpClient.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 60000);
-		HttpConnectionParams.setSoTimeout(params, 60000);
+		HttpConnectionParams.setConnectionTimeout(params, 600000);
+		HttpConnectionParams.setSoTimeout(params, 600000);
 		// set parameter
 		HttpProtocolParams.setUseExpectContinue(httpClient.getParams(), true);
 
@@ -51,7 +51,7 @@ public class SoapWebServiceUtility {
 						throws ClientProtocolException, IOException {
 
 					// get response entity
-					HttpEntity entity = response.getEntity();
+				HttpEntity entity = response.getEntity();
 					String responseStr = null;
 					try {
 						SAXParserFactory spf = SAXParserFactory.newInstance();

@@ -33,7 +33,6 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.login);
         final EditText loginEditText = (EditText) findViewById(R.id.loginUsername);
         final EditText passwordEditText = (EditText) findViewById(R.id.loginPassword);
@@ -50,10 +49,15 @@ public class LoginActivity extends Activity {
 				startActivity(i);*/
 
                 msgText.setText(" ");
-                loginId = loginEditText.getText().toString().trim();
-                password = passwordEditText.getText().toString().trim();
+                //loginId = loginEditText.getText().toString().trim();
+                //password = passwordEditText.getText().toString().trim();
+                loginId = "Admin";
+                password = "Admin";
                 if(loginId != null && password != null){
-                    new UserLogin().execute(new Object());
+                    //new UserLogin().execute(new Object());
+                    Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                    i.putExtra("UserID", 1);
+                    startActivity(i);
                 }
             }
         });

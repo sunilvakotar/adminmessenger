@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
-    android:background="#ffffff" >
+    android:background="#ffffff" >-->
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -53,6 +53,7 @@
                 android:layout_below="@+id/tvUsername"
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
+                android:textColor="@color/black"
                 android:ems="10" >
             </EditText>
 
@@ -84,6 +85,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
                 android:ems="10"
+                android:textColor="@color/black"
                 android:inputType="textPassword" />
 
             <TextView
@@ -111,4 +113,4 @@
         </RelativeLayout>
 
     </LinearLayout>
-</ScrollView>
+<!--</ScrollView>-->
