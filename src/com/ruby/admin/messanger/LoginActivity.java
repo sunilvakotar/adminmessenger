@@ -49,15 +49,15 @@ public class LoginActivity extends Activity {
 				startActivity(i);*/
 
                 msgText.setText(" ");
-                //loginId = loginEditText.getText().toString().trim();
-                //password = passwordEditText.getText().toString().trim();
-                loginId = "Admin";
-                password = "Admin";
+                loginId = loginEditText.getText().toString().trim();
+                password = passwordEditText.getText().toString().trim();
+                //loginId = "Admin";
+                //password = "Admin";
                 if(loginId != null && password != null){
-                    //new UserLogin().execute(new Object());
-                    Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                    new UserLogin().execute(new Object());
+                    /*Intent i = new Intent(LoginActivity.this, MessageActivity.class);
                     i.putExtra("UserID", 1);
-                    startActivity(i);
+                    startActivity(i);*/
                 }
             }
         });

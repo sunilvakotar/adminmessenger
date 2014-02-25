@@ -42,7 +42,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:text="User Name"
-                android:textColor="@color/red"
+                android:textColor="@color/blueborder"
                 android:textSize="16sp"
                 android:textStyle="bold"  />
 
@@ -72,7 +72,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
                 android:text="Password"
-                android:textColor="@color/red"
+                android:textColor="@color/blueborder"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 />
