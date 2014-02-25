@@ -53,7 +53,7 @@ public class LoginActivity extends Activity {
                 password = passwordEditText.getText().toString().trim();
                 //loginId = "Admin";
                 //password = "Admin";
-                if(loginId != null && password != null){
+                if(!loginId.equals("") && !password.equals("")){
                     new UserLogin().execute(new Object());
                     /*Intent i = new Intent(LoginActivity.this, MessageActivity.class);
                     i.putExtra("UserID", 1);

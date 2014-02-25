@@ -62,14 +62,14 @@ public class MessageActivity extends Activity {
         messageListView.setAdapter(messageAdapter);
         messageAdapter.notifyDataSetChanged();
 
-        String msg = getIntent().getStringExtra("msg");
+       /* String msg = getIntent().getStringExtra("msg");
         if(msg != null){
             Message newMessage = new Message();
             newMessage.setDate(dateFormat.format(new Date()));
             newMessage.setMessage(msg);
             messageAdapter.addMessage(newMessage);
             messageAdapter.notifyDataSetChanged();
-        }
+        }*/
     }
 
     /**
@@ -80,7 +80,7 @@ public class MessageActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
             // Waking up mobile if it is sleeping
-            //WakeLocker.acquire(getApplicationContext());
+            WakeLocker.acquire(getApplicationContext());
 
             /**
              * Take appropriate action on this message
@@ -98,7 +98,7 @@ public class MessageActivity extends Activity {
             //Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
 
             // Releasing wake lock
-            //WakeLocker.release();
+            WakeLocker.release();
         }
     };
 }

@@ -8,21 +8,10 @@ import android.content.Intent;
  */
 public final class CommonUtilities {
 
-    // give your server registration url here
-    static final String SERVER_URL = "http://10.0.2.2/gcm_server_php/register.php";
-
-    // Google project id
-    static final String SENDER_ID = "903913289319";
-
-    /**
-     * Tag used on log messages.
-     */
-    static final String TAG = "AndroidHive GCM";
-
     public static final String DISPLAY_MESSAGE_ACTION =
             "com.gcmclienttest.gcm.DISPLAY_MESSAGE";
 
-    public static final String EXTRA_MESSAGE = "msg";
+    public static final String EXTRA_MESSAGE = "message";
 
     /**
      * Notifies UI to display a message.

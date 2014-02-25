@@ -66,21 +66,17 @@ public class GCMIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent notificationIntent = new Intent(this, MessageActivity.class);
+        Intent notificationIntent = new Intent(GCMIntentService.this, MessageActivity.class);
         // set intent so it does not start a new activity
-        /*notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);*/
-        notificationIntent.putExtra("msg", title);
-
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent intent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                PendingIntent.getActivity(GCMIntentService.this, 0, notificationIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-        .setContentTitle("PlumSlice")
+        .setContentTitle("tki")
         .setSmallIcon(R.drawable.ic_launcher)
-        .setContentText(title)
-        .setDefaults(-1)
+        .setContentText("New Message")
         .setContentIntent(intent);
 
         mBuilder.setAutoCancel(true);

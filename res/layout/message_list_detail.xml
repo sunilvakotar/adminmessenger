@@ -15,7 +15,7 @@
         android:id="@+id/messageText"
         android:layout_gravity="center_horizontal|left"
         android:layout_margin="10dp"
-        android:textColor="@color/blueborder"
+        android:textColor="@color/blue3"
         android:textSize="16sp"
         android:textStyle="italic"/>
 

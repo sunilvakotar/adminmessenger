@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:background="#ffffff" >-->
-
-    <LinearLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/loginLinear"
         android:layout_width="fill_parent"
@@ -42,7 +34,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:text="User Name"
-                android:textColor="@color/blueborder"
+                android:textColor="@color/blue3"
                 android:textSize="16sp"
                 android:textStyle="bold"  />
 
@@ -72,7 +64,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
                 android:text="Password"
-                android:textColor="@color/blueborder"
+                android:textColor="@color/blue3"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 />
@@ -113,4 +105,3 @@
         </RelativeLayout>
 
     </LinearLayout>
-<!--</ScrollView>-->
