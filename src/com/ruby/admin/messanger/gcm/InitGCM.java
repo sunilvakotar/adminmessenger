@@ -112,7 +112,7 @@ public class InitGCM {
 		// This sample app persists the registration ID in shared preferences,
 		// but
 		// how you store the regID in your app is up to you.
-		return context.getSharedPreferences(InitGCM.class.getSimpleName(),
+		return context.getSharedPreferences(CommonUtilities.SHARED_PREF_NAME,
 				Context.MODE_PRIVATE);
 	}
 

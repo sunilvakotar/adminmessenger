@@ -12,6 +12,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String MESSAGE_TABLE_CREATION = "create table "+ Constant.TABLE_MESSAGE+
             " ("+ Constant.ID+ " integer primary key AUTOINCREMENT,"+
             Constant.MESSAGE + " text not null, " +
+            Constant.USER_ID + " integer not null, " +
             Constant.DATE + " text not null);";
 	
 
@@ -40,7 +41,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.w(MyDatabaseHelper.class.getName(), MESSAGE_TABLE_CREATION);
 		db.execSQL(MESSAGE_TABLE_CREATION);
-        db.execSQL("insert into "+Constant.TABLE_MESSAGE+" (message, date) values ('Hello This is first message form Admin.','25-FEB-2014 07:22 AM')");
+        //db.execSQL("insert into "+Constant.TABLE_MESSAGE+" (message, date) values ('Hello This is first message form Admin.','25-FEB-2014 07:22 AM')");
     }
 
 	@Override

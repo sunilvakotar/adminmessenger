@@ -1,23 +1,32 @@
 package com.ruby.admin.messanger.gcm;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.ruby.admin.messanger.MessageActivity;
 import com.ruby.admin.messanger.R;
+import com.ruby.admin.messanger.bean.Message;
+import com.ruby.admin.messanger.db.MessageDataSource;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GCMIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
 	private static final String TAG = "GcmIntentService";
     private NotificationManager mNotificationManager;
 
+    private MessageDataSource dataSource;
+    SharedPreferences prefs;
 
     public GCMIntentService() {
         super("GcmIntentService");
@@ -51,6 +60,19 @@ public class GCMIntentService extends IntentService {
 
                 Log.i(TAG, "Received: " + extras.toString());
                 String msg = intent.getStringExtra("msg");
+
+                dataSource = new MessageDataSource(this);
+                dataSource.open();
+                prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, MODE_PRIVATE);
+
+                Message newMessage = new Message();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
+                newMessage.setDate(dateFormat.format(new Date()));
+                newMessage.setMessage(msg);
+                Integer userID = prefs.getInt(CommonUtilities.USER_PREF, Activity.MODE_PRIVATE);
+                newMessage.setUserId(userID);
+                dataSource.saveMessage(newMessage);
+
                 CommonUtilities.displayMessage(this, msg);
                 sendNotification(msg);
             }
@@ -68,9 +90,11 @@ public class GCMIntentService extends IntentService {
 
         Intent notificationIntent = new Intent(GCMIntentService.this, MessageActivity.class);
         // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        notificationIntent.putExtra(CommonUtilities.EXTRA_MESSAGE, title);
+
         PendingIntent intent =
-                PendingIntent.getActivity(GCMIntentService.this, 0, notificationIntent, 0);
+                PendingIntent.getActivity(GCMIntentService.this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

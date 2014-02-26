@@ -3,6 +3,7 @@ package com.ruby.admin.messanger;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.soap.SoapWebServiceInfo;
 import com.ruby.admin.messanger.soap.SoapWebServiceUtility;
 import org.json.JSONException;
@@ -30,10 +32,23 @@ public class LoginActivity extends Activity {
     private String result;
     private TextView msgText;
 
+    int mode = Activity.MODE_PRIVATE;
+    SharedPreferences prefs;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
+        boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
+        if(isLoggedIn){
+            Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }
+
         final EditText loginEditText = (EditText) findViewById(R.id.loginUsername);
         final EditText passwordEditText = (EditText) findViewById(R.id.loginPassword);
         msgText = (TextView) findViewById(R.id.msgText);
@@ -42,58 +57,21 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-				/*Intent i = new Intent(MunimjiInvoiceActivity.this, MainScreen.class);
-				i.putExtra("UserID", 5);
-				i.putExtra("UserName", "Vishal");
-				startActivity(i);*/
-
                 msgText.setText(" ");
-                loginId = loginEditText.getText().toString().trim();
+
+                Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                i.putExtra("UserID", 1);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                finish();
+                /*loginId = loginEditText.getText().toString().trim();
                 password = passwordEditText.getText().toString().trim();
-                //loginId = "Admin";
-                //password = "Admin";
                 if(!loginId.equals("") && !password.equals("")){
                     new UserLogin().execute(new Object());
-                    /*Intent i = new Intent(LoginActivity.this, MessageActivity.class);
-                    i.putExtra("UserID", 1);
-                    startActivity(i);*/
-                }
+                }*/
             }
         });
 
-
-		/*Button btnSignin = (Button)findViewById(R.id.btnSignin);
-
-
-
-		 btnSignin.setOnClickListener(new View.OnClickListener() {
-
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-
-				Intent i = new Intent(MunimjiInvoiceActivity.this, MainScreen.class);
-				i.putExtra("UserID", 5);
-				i.putExtra("UserName", "Vishal");
-
-				msgText.setText(" ");
-				loginId = loginEditText.getText().toString().trim();
-				password = passwordEditText.getText().toString().trim();
-				//new UserLogin().execute(new Object());
-
-			}
-		});*/
-        /*SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        try {
-            Date utilDate = formatter.parse("2012/08/25");
-            Date currentDate = new Date();
-            if(currentDate.after(utilDate)){
-                finish();
-            }
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -134,7 +112,9 @@ public class LoginActivity extends Activity {
                         }else{
                             Intent i = new Intent(LoginActivity.this, MessageActivity.class);
                             i.putExtra("UserID", userId);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
+                            finish();
                         }
                     }else{
                         msgText.setText("* Username Or Password Incorrect");

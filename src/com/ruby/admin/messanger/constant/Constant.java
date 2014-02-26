@@ -11,5 +11,6 @@ public class Constant {
     public static final String TABLE_MESSAGE = "message";
     public static final String MESSAGE = "message";
     public static final String DATE = "date";
+    public static final String USER_ID = "user_id";
 	
 }

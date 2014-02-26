@@ -9,9 +9,13 @@ import android.content.Intent;
 public final class CommonUtilities {
 
     public static final String DISPLAY_MESSAGE_ACTION =
-            "com.gcmclienttest.gcm.DISPLAY_MESSAGE";
+            "com.ruby.admin.messanger.DISPLAY_MESSAGE";
 
     public static final String EXTRA_MESSAGE = "message";
+
+    public static final String SHARED_PREF_NAME = "com.ruby.admin.messanger.prefs";
+    public static final String USER_PREF = "USER_ID";
+    public static final String LOGGED_IN_PREF = "LOGGED_IN";
 
     /**
      * Notifies UI to display a message.

@@ -14,7 +14,7 @@ import java.util.List;
 public class MessageDataSource {
 	private SQLiteDatabase database;
 	private MyDatabaseHelper databaseHelper;
-	private String[] messageColumns = { Constant.ID, Constant.MESSAGE, Constant.DATE};
+	private String[] messageColumns = { Constant.ID, Constant.MESSAGE, Constant.DATE, Constant.USER_ID};
 
 	public MessageDataSource(Context context){
 		databaseHelper = new MyDatabaseHelper(context);
@@ -32,6 +32,7 @@ public class MessageDataSource {
         ContentValues messageValues = new ContentValues();
         messageValues.put(Constant.MESSAGE, message.getMessage());
         messageValues.put(Constant.DATE, message.getDate());
+        messageValues.put(Constant.USER_ID, message.getUserId());
         database.insert(Constant.TABLE_MESSAGE, null, messageValues);
     }
 	
@@ -49,11 +50,26 @@ public class MessageDataSource {
         return messages;
     }
 
+    public List<Message> getAllMessagesByUser(Integer userId){
+        List<Message> messages = new ArrayList<Message>();
+        Cursor cursor = database.query(Constant.TABLE_MESSAGE, messageColumns, Constant.USER_ID + " = " + userId, null, null,
+                null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            Message message = cursorToMessage(cursor);
+            messages.add(message);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return messages;
+    }
+
     private Message cursorToMessage(Cursor cursor) {
         Message message = new Message();
         message.setId(cursor.getInt(0));
         message.setMessage(cursor.getString(1));
         message.setDate(cursor.getString(2));
+        message.setUserId(cursor.getInt(3));
         return message;
     }
 	
