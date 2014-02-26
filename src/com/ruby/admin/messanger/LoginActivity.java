@@ -59,16 +59,16 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 msgText.setText(" ");
 
-                Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                /*Intent i = new Intent(LoginActivity.this, MessageActivity.class);
                 i.putExtra("UserID", 1);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
-                finish();
-                /*loginId = loginEditText.getText().toString().trim();
+                finish();*/
+                loginId = loginEditText.getText().toString().trim();
                 password = passwordEditText.getText().toString().trim();
                 if(!loginId.equals("") && !password.equals("")){
                     new UserLogin().execute(new Object());
-                }*/
+                }
             }
         });
 

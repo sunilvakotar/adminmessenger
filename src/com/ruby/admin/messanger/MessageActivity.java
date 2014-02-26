@@ -73,17 +73,6 @@ public class MessageActivity extends Activity {
         messageListView.setAdapter(messageAdapter);
         messageAdapter.notifyDataSetChanged();
 
-        /*String msg = getIntent().getStringExtra(CommonUtilities.EXTRA_MESSAGE);
-        if(msg != null){
-            Message newMessage = new Message();
-            newMessage.setDate(dateFormat.format(new Date()));
-            newMessage.setMessage(msg);
-            newMessage.setUserId(userID);
-            dataSource.saveMessage(newMessage);
-            messageAdapter.addMessage(newMessage);
-            messageAdapter.notifyDataSetChanged();
-        }*/
-
         boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
         if(!isLoggedIn){
             Intent i = new Intent(MessageActivity.this, LoginActivity.class);

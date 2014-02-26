@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.ruby.admin.messanger.LoginActivity;
 import com.ruby.admin.messanger.MessageActivity;
 import com.ruby.admin.messanger.R;
 import com.ruby.admin.messanger.bean.Message;
@@ -88,10 +89,10 @@ public class GCMIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent notificationIntent = new Intent(GCMIntentService.this, MessageActivity.class);
+        Intent notificationIntent = new Intent(GCMIntentService.this, LoginActivity.class);
         // set intent so it does not start a new activity
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        notificationIntent.putExtra(CommonUtilities.EXTRA_MESSAGE, title);
+        //notificationIntent.putExtra(CommonUtilities.EXTRA_MESSAGE, title);
 
         PendingIntent intent =
                 PendingIntent.getActivity(GCMIntentService.this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
