@@ -26,8 +26,8 @@ public class SoapWebServiceUtility {
 		final DefaultHttpClient httpClient = new DefaultHttpClient();
 		// request parameters
 		HttpParams params = httpClient.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 60000);
-		HttpConnectionParams.setSoTimeout(params, 60000);
+		HttpConnectionParams.setConnectionTimeout(params, 90000);
+		HttpConnectionParams.setSoTimeout(params, 90000);
 		// set parameter
 		HttpProtocolParams.setUseExpectContinue(httpClient.getParams(), true);
 

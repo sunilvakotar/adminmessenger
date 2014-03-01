@@ -88,7 +88,7 @@ public class LoginActivity extends Activity {
         }
 
         protected String doInBackground(Object... parametros) {
-            Log.d(TAG, "Executando doInBackground de EfetuaLogin");
+            Log.d(TAG, "Executando doInBackground de Login");
             if (loginId != "" && password != "") {
                 String envelop = String.format(
                         SoapWebServiceInfo.LOGIN_ENVELOPE, loginId, password);
@@ -122,6 +122,8 @@ public class LoginActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }else {
+                msgText.setText("* Must be some problem with internet. Please try again.");
             }
             Log.d(TAG, "onPostExecute");
             progressDialog.dismiss();
