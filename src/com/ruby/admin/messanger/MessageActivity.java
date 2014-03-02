@@ -64,6 +64,7 @@ public class MessageActivity extends Activity {
             }
         }else{
             userID = prefs.getInt(CommonUtilities.USER_PREF, Activity.MODE_PRIVATE);
+            new InitGCM().initGcmRegister(MessageActivity.this, userID);
         }
 
         dataSource = new MessageDataSource(this);
