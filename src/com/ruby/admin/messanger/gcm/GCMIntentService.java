@@ -70,8 +70,8 @@ public class GCMIntentService extends IntentService {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
                 newMessage.setDate(dateFormat.format(new Date()));
                 newMessage.setMessage(msg);
-                Integer userID = prefs.getInt(CommonUtilities.USER_PREF, Activity.MODE_PRIVATE);
-                newMessage.setUserId(userID);
+                String username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
+                newMessage.setUsername(username);
                 dataSource.saveMessage(newMessage);
 
                 CommonUtilities.displayMessage(this, msg);

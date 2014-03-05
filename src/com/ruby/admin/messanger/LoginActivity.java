@@ -1,7 +1,10 @@
 package com.ruby.admin.messanger;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -35,6 +38,8 @@ public class LoginActivity extends Activity {
     int mode = Activity.MODE_PRIVATE;
     SharedPreferences prefs;
 
+    ConnectionDetector cd;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,13 @@ public class LoginActivity extends Activity {
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
+        }
+
+        cd = new ConnectionDetector(getApplicationContext());
+        boolean isInternetPresent = cd.isConnectingToInternet();
+        if (!isInternetPresent) {
+            showAlertDialog(LoginActivity.this, "No Internet Connection",
+                    "You don't have internet connection.");
         }
 
         final EditText loginEditText = (EditText) findViewById(R.id.loginUsername);
@@ -74,6 +86,30 @@ public class LoginActivity extends Activity {
 
     }
 
+    private AlertDialog alertDialog;
+    public void showAlertDialog(Context context, String title, String message) {
+        alertDialog = new AlertDialog.Builder(context).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting alert dialog icon
+        //alertDialog.setIcon(R.drawable.fail);
+
+        // Setting OK Button
+        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
 
 
     class UserLogin extends AsyncTask<Object, Void, String> {
@@ -111,7 +147,8 @@ public class LoginActivity extends Activity {
                             msgText.setText("* Username Or Password Incorrect");
                         }else{
                             Intent i = new Intent(LoginActivity.this, MessageActivity.class);
-                            i.putExtra("UserID", userId);
+                            i.putExtra("username", loginId);
+                            i.putExtra("password", password);
                             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
                             finish();

@@ -14,7 +14,8 @@ public final class CommonUtilities {
     public static final String EXTRA_MESSAGE = "message";
 
     public static final String SHARED_PREF_NAME = "com.ruby.admin.messanger.prefs";
-    public static final String USER_PREF = "USER_ID";
+    public static final String USERNAME_PREF = "USERNAME_PREF";
+    public static final String PASSWORD_PREF = "PASSWORD_PREF";
     public static final String LOGGED_IN_PREF = "LOGGED_IN";
 
     /**

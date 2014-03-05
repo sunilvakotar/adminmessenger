@@ -41,21 +41,21 @@ public class InitGCM {
 	Context mContext;
 
 	String regid;
-    Integer userId;
+    String username;
 
-	public void initGcmRegister(Context context, Integer userId) {
+	public void initGcmRegister(Context context, String username) {
 
 		mContext = context;
-        this.userId = userId;
+        this.username = username;
 		// Check device for Play Services APK. If check succeeds, proceed with
 		// GCM registration.
 		if (checkPlayServices(context)) {
 			gcm = GoogleCloudMessaging.getInstance(context);
 			regid = getRegistrationId(context);
 
-			if (regid.isEmpty()) {
+			//if (regid.isEmpty()) {
 				registerInBackground(context);
-			}
+			//}
 		} else {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
@@ -164,16 +164,18 @@ public class InitGCM {
 
 				String msg = "";
 				try {
-					if (gcm == null) {
-						gcm = GoogleCloudMessaging.getInstance(context);
-					}
-					regid = gcm.register(SENDER_ID);
+                    if (regid.isEmpty()) {
+                        if (gcm == null) {
+                            gcm = GoogleCloudMessaging.getInstance(context);
+                        }
+                        regid = gcm.register(SENDER_ID);
+                    }
 					msg = "Device registered, registration ID=" + regid;
 					Log.d(TAG, msg);
 
-                    if (userId != null && (regid != null && !regid.equals(""))) {
+                    if (username != null && (regid != null && !regid.equals(""))) {
                         String envelop = String.format(
-                                SoapWebServiceInfo.UPDATE_REGISTRATION_ENVELOPE, userId, regid);
+                                SoapWebServiceInfo.UPDATE_REGISTRATION_ENVELOPE, username, regid);
                         String result = SoapWebServiceUtility.callWebService(envelop,
                                 SoapWebServiceInfo.UPDATE_REGISTRATION_SOAP_ACTION,
                                 SoapWebServiceInfo.UPDATE_REGISTRATION_RESULT_TAG);

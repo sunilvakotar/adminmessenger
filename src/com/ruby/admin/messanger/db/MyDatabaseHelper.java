@@ -12,7 +12,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String MESSAGE_TABLE_CREATION = "create table "+ Constant.TABLE_MESSAGE+
             " ("+ Constant.ID+ " integer primary key AUTOINCREMENT,"+
             Constant.MESSAGE + " text not null, " +
-            Constant.USER_ID + " integer not null, " +
+            Constant.USER_NAME + " text not null, " +
             Constant.DATE + " text not null);";
 	
 

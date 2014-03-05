@@ -9,7 +9,7 @@ public class Message {
     private Integer id;
     private String message;
     private String date;
-    private Integer userId;
+    private String username;
 
     public Integer getId() {
         return id;
@@ -35,11 +35,11 @@ public class Message {
         this.date = date;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

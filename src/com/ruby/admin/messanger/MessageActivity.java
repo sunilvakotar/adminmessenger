@@ -28,7 +28,9 @@ import java.util.List;
  */
 public class MessageActivity extends Activity {
 
-    private Integer userID;
+    private Integer userId;
+    private String username;
+    private String password;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
 
@@ -55,21 +57,24 @@ public class MessageActivity extends Activity {
         Bundle extra = getIntent().getExtras();
 
         if(extra != null){
-            userID = extra.getInt("UserID");
-            if(userID > 0){
-                new InitGCM().initGcmRegister(MessageActivity.this, userID);
-                prefEditor.putInt(CommonUtilities.USER_PREF, userID);
+            userId = extra.getInt("userId");
+            username = extra.getString("username");
+            password = extra.getString("password");
+            if(userId > 0){
+                new InitGCM().initGcmRegister(MessageActivity.this, username);
+                prefEditor.putString(CommonUtilities.USERNAME_PREF, username);
+                prefEditor.putString(CommonUtilities.PASSWORD_PREF, password);
                 prefEditor.putBoolean(CommonUtilities.LOGGED_IN_PREF, true);
                 prefEditor.commit();
             }
         }else{
-            userID = prefs.getInt(CommonUtilities.USER_PREF, Activity.MODE_PRIVATE);
-            new InitGCM().initGcmRegister(MessageActivity.this, userID);
+            username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
+            new InitGCM().initGcmRegister(MessageActivity.this, username);
         }
 
         dataSource = new MessageDataSource(this);
         dataSource.open();
-        messageList = dataSource.getAllMessagesByUser(userID);
+        messageList = dataSource.getAllMessagesByUser(username);
         messageAdapter = new MessageAdapter(MessageActivity.this, messageList);
         messageListView.setAdapter(messageAdapter);
         messageAdapter.notifyDataSetChanged();
@@ -125,8 +130,8 @@ public class MessageActivity extends Activity {
             Message newMessage = new Message();
             newMessage.setDate(dateFormat.format(new Date()));
             newMessage.setMessage(msg);
-            userID = prefs.getInt(CommonUtilities.USER_PREF, Activity.MODE_PRIVATE);
-            newMessage.setUserId(userID);
+            username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
+            newMessage.setUsername(username);
             //dataSource.saveMessage(newMessage);
             messageAdapter.addMessage(newMessage);
             messageAdapter.notifyDataSetChanged();
