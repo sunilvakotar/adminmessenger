@@ -1,22 +1,24 @@
 package com.ruby.admin.messanger;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.ruby.admin.messanger.adapter.MessageAdapter;
 import com.ruby.admin.messanger.bean.Message;
 import com.ruby.admin.messanger.db.MessageDataSource;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.gcm.InitGCM;
+import com.ruby.admin.messanger.soap.SoapWebServiceInfo;
+import com.ruby.admin.messanger.soap.SoapWebServiceUtility;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class MessageActivity extends Activity {
         prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
         prefEditor = prefs.edit();
 
+
         registerReceiver(mHandleMessageReceiver, new IntentFilter(
                 CommonUtilities.DISPLAY_MESSAGE_ACTION));
 
@@ -69,7 +72,9 @@ public class MessageActivity extends Activity {
             }
         }else{
             username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
+            password = prefs.getString(CommonUtilities.PASSWORD_PREF, null);
             new InitGCM().initGcmRegister(MessageActivity.this, username);
+            new UserCheck().execute(new Object());
         }
 
         dataSource = new MessageDataSource(this);
@@ -103,12 +108,13 @@ public class MessageActivity extends Activity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.action_logout:
-                prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
+                showAlertDialog(MessageActivity.this, "Logout", "If you logout then notification will not be received. Are you still want to Logout ?");
+               /* prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
                 prefEditor.commit();
                 Intent i = new Intent(MessageActivity.this, LoginActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
-                finish();
+                finish();*/
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -141,4 +147,149 @@ public class MessageActivity extends Activity {
             WakeLocker.release();
         }
     };
+
+    static final String TAG = "MessageActivity";
+
+    public void showAlertDialog(final Context context, String title, String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting alert dialog icon
+        //alertDialog.setIcon(R.drawable.fail);
+
+        // Setting Yes Button
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            public void onClick(final DialogInterface dialog, int which) {
+                dialog.dismiss();
+                new LogoutTask().execute(new Object());
+            }
+        });
+
+        // Setting Yes Button
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+    class LogoutTask extends AsyncTask<Object, Void, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d(TAG, "onPreExecute");
+            progressDialog = ProgressDialog.show(MessageActivity.this,
+                    "", "Please wait..", true, false);
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+
+            String msg = "";
+            try {
+                if (username != null) {
+                    String envelop = String.format(
+                            SoapWebServiceInfo.UPDATE_REGISTRATION_ENVELOPE, username, "");
+                    result = SoapWebServiceUtility.callWebService(envelop,
+                            SoapWebServiceInfo.UPDATE_REGISTRATION_SOAP_ACTION,
+                            SoapWebServiceInfo.UPDATE_REGISTRATION_RESULT_TAG);
+
+                }
+
+            } catch (Exception ex) {
+                msg = "Error :" + ex.getMessage();
+                Log.e(TAG, msg);
+            }
+            return result;
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    String flag = (String)jsonObject.get("Flag");
+                    if("True".equals(flag)){
+                        progressDialog.dismiss();
+                        prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
+                        prefEditor.commit();
+                        Intent i = new Intent(MessageActivity.this, LoginActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error :" + e.getMessage());
+                }
+            }
+            Log.d(TAG, "onPostExecute");
+            progressDialog.dismiss();
+        }
+    }
+
+    private ProgressDialog progressDialog;
+    private String result;
+    class UserCheck extends AsyncTask<Object, Void, String> {
+
+        private final static String TAG = "MessageActivity.UserCheck";
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d(TAG, "onPreExecute");
+            /*progressDialog = ProgressDialog.show(MessageActivity.this,
+                    "", "Loading..", true, false);*/
+        }
+
+        protected String doInBackground(Object... parametros) {
+            Log.d(TAG, "doInBackground for Login check");
+            if (username != null && password != null) {
+                String envelop = String.format(
+                        SoapWebServiceInfo.LOGIN_ENVELOPE, username, password);
+                result = SoapWebServiceUtility.callWebService(envelop,
+                        SoapWebServiceInfo.LOGIN_SOAP_ACTION,
+                        SoapWebServiceInfo.LOGIN_RESULT_TAG);
+            }
+
+            return result;
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    Integer userId = (Integer)jsonObject.get("UserId");
+                    boolean isUserExist = true;
+                    if(userId != null){
+                        if(userId == 0){
+                            isUserExist = false;
+                        }
+                    }else{
+                        isUserExist = false;
+                    }
+                    if(!isUserExist){
+                        new LogoutTask().execute(new Object());
+                        /*prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
+                        prefEditor.commit();
+                        Intent i = new Intent(MessageActivity.this, LoginActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        finish();*/
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.d(TAG, "onPostExecute");
+            /*progressDialog.dismiss();*/
+        }
+    }
 }

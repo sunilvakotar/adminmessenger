@@ -197,6 +197,7 @@ public class InitGCM {
 				} catch (IOException ex) {
 					msg = "Error :" + ex.getMessage();
 					Log.e(TAG, msg);
+                    registerInBackground(context);
 				}
 				return msg;
 

@@ -50,10 +50,10 @@ public class GCMIntentService extends IntentService {
              */
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
+                sendNotification("Error","Send error: " + extras.toString());
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " +
+                sendNotification("Error", "Deleted messages on server: " +
                         extras.toString());
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
@@ -61,6 +61,7 @@ public class GCMIntentService extends IntentService {
 
                 Log.i(TAG, "Received: " + extras.toString());
                 String msg = intent.getStringExtra("msg");
+                String title = intent.getStringExtra("title");
 
                 dataSource = new MessageDataSource(this);
                 dataSource.open();
@@ -70,12 +71,13 @@ public class GCMIntentService extends IntentService {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
                 newMessage.setDate(dateFormat.format(new Date()));
                 newMessage.setMessage(msg);
+                newMessage.setTitle(title);
                 String username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
                 newMessage.setUsername(username);
                 dataSource.saveMessage(newMessage);
 
                 CommonUtilities.displayMessage(this, msg);
-                sendNotification(msg);
+                sendNotification(title, msg);
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -85,9 +87,10 @@ public class GCMIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String title) {
+    private void sendNotification(String title, String msg) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
+        //Notification notification = new Notification(icon, message, when);
 
         Intent notificationIntent = new Intent(GCMIntentService.this, LoginActivity.class);
         // set intent so it does not start a new activity
@@ -99,9 +102,9 @@ public class GCMIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-        .setContentTitle("tki")
+        .setContentTitle(getString(R.string.app_name))
         .setSmallIcon(R.drawable.ic_launcher)
-        .setContentText("New Message")
+        .setContentText(title)
         .setContentIntent(intent);
 
         mBuilder.setAutoCancel(true);

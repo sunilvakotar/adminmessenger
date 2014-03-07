@@ -147,6 +147,7 @@ public class LoginActivity extends Activity {
                             msgText.setText("* Username Or Password Incorrect");
                         }else{
                             Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                            i.putExtra("userId", userId);
                             i.putExtra("username", loginId);
                             i.putExtra("password", password);
                             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
