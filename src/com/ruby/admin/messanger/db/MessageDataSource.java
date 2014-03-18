@@ -15,6 +15,7 @@ public class MessageDataSource {
 	private SQLiteDatabase database;
 	private MyDatabaseHelper databaseHelper;
 	private String[] messageColumns = { Constant.ID, Constant.MESSAGE, Constant.TITLE, Constant.DATE, Constant.USER_NAME};
+    private String[] titleColumn = { Constant.TITLE};
 
 	public MessageDataSource(Context context){
 		databaseHelper = new MyDatabaseHelper(context);
@@ -35,6 +36,19 @@ public class MessageDataSource {
         messageValues.put(Constant.DATE, message.getDate());
         messageValues.put(Constant.USER_NAME, message.getUsername());
         database.insert(Constant.TABLE_MESSAGE, null, messageValues);
+    }
+
+    public List<String> getAllTitle(){
+        List<String> titles = new ArrayList<String>();
+        Cursor cursor = database.query(true, Constant.TABLE_MESSAGE, titleColumn, null, null, Constant.TITLE, null,
+                null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            titles.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return titles;
     }
 	
 	public List<Message> getAllMessages(){

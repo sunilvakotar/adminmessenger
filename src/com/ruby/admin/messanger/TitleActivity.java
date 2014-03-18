@@ -10,9 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import com.ruby.admin.messanger.adapter.MessageAdapter;
 import com.ruby.admin.messanger.adapter.TitleAdapter;
-import com.ruby.admin.messanger.bean.Message;
 import com.ruby.admin.messanger.db.MessageDataSource;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.gcm.InitGCM;
@@ -21,16 +19,13 @@ import com.ruby.admin.messanger.soap.SoapWebServiceUtility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Sunil Vakotar on 2/24/14.
+ * Created by Sunil Vakotar on 3/18/14.
  */
-public class MessageActivity extends Activity {
-
+public class TitleActivity extends Activity {
     private Integer userId;
     private String username;
     private String password;
@@ -39,11 +34,6 @@ public class MessageActivity extends Activity {
     private List<String> titleList = new ArrayList<String>();
     private TitleAdapter titleAdapter;
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm aaa");
-
-    private ListView messageListView;
-    private List<Message> messageList = new ArrayList<Message>();
-    private MessageAdapter messageAdapter;
     private MessageDataSource dataSource;
 
     int mode = Activity.MODE_PRIVATE;
@@ -53,14 +43,9 @@ public class MessageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message);
-        messageListView = (ListView) findViewById(R.id.messageList);
 
         prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
         prefEditor = prefs.edit();
-
-
-        registerReceiver(mHandleMessageReceiver, new IntentFilter(
-                CommonUtilities.DISPLAY_MESSAGE_ACTION));
 
         Bundle extra = getIntent().getExtras();
 
@@ -69,7 +54,7 @@ public class MessageActivity extends Activity {
             username = extra.getString("username");
             password = extra.getString("password");
             if(userId > 0){
-                new InitGCM().initGcmRegister(MessageActivity.this, username);
+                new InitGCM().initGcmRegister(TitleActivity.this, username);
                 prefEditor.putString(CommonUtilities.USERNAME_PREF, username);
                 prefEditor.putString(CommonUtilities.PASSWORD_PREF, password);
                 prefEditor.putBoolean(CommonUtilities.LOGGED_IN_PREF, true);
@@ -78,28 +63,24 @@ public class MessageActivity extends Activity {
         }else{
             username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
             password = prefs.getString(CommonUtilities.PASSWORD_PREF, null);
-            new InitGCM().initGcmRegister(MessageActivity.this, username);
+            new InitGCM().initGcmRegister(TitleActivity.this, username);
             new UserCheck().execute(new Object());
         }
 
         dataSource = new MessageDataSource(this);
         dataSource.open();
-      /*  messageList = dataSource.getAllMessagesByUser(username);
-        messageAdapter = new MessageAdapter(MessageActivity.this, messageList);
-        messageListView.setAdapter(messageAdapter);
-        messageAdapter.notifyDataSetChanged();*/
 
         // title
         titleList = dataSource.getAllTitle();
         titleListView = (ListView) findViewById(R.id.messageList);
-        titleAdapter = new TitleAdapter(MessageActivity.this, titleList);
+        titleAdapter = new TitleAdapter(TitleActivity.this, titleList);
         titleListView.setAdapter(titleAdapter);
         titleAdapter.notifyDataSetChanged();
 
         //title start
         boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
         if(!isLoggedIn){
-            Intent i = new Intent(MessageActivity.this, LoginActivity.class);
+            Intent i = new Intent(TitleActivity.this, LoginActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
@@ -121,7 +102,7 @@ public class MessageActivity extends Activity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.action_logout:
-                showAlertDialog(MessageActivity.this, "Logout", "If you logout then notification will not be received. Are you still want to Logout ?");
+                showAlertDialog(TitleActivity.this, "Logout", "If you logout then notification will not be received. Are you still want to Logout ?");
                /* prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
                 prefEditor.commit();
                 Intent i = new Intent(MessageActivity.this, LoginActivity.class);
@@ -135,33 +116,7 @@ public class MessageActivity extends Activity {
     }
 
 
-    /**
-     * Receiving push messages
-     * */
-    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String msg = intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
-            // Waking up mobile if it is sleeping
-            WakeLocker.acquire(getApplicationContext());
-
-            // Showing received message
-            Message newMessage = new Message();
-            newMessage.setDate(dateFormat.format(new Date()));
-            newMessage.setMessage(msg);
-            username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
-            newMessage.setUsername(username);
-            //dataSource.saveMessage(newMessage);
-            messageAdapter.addMessage(newMessage);
-            messageAdapter.notifyDataSetChanged();
-            //Toast.makeText(getApplicationContext(), "New Message: " + newMessage, Toast.LENGTH_LONG).show();
-
-            // Releasing wake lock
-            WakeLocker.release();
-        }
-    };
-
-    static final String TAG = "MessageActivity";
+    static final String TAG = "TitleActivity";
 
     public void showAlertDialog(final Context context, String title, String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -186,7 +141,7 @@ public class MessageActivity extends Activity {
         // Setting Yes Button
         alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
+                dialog.dismiss();
             }
         });
 
@@ -199,7 +154,7 @@ public class MessageActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             Log.d(TAG, "onPreExecute");
-            progressDialog = ProgressDialog.show(MessageActivity.this,
+            progressDialog = ProgressDialog.show(TitleActivity.this,
                     "", "Please wait..", true, false);
         }
 
@@ -234,7 +189,7 @@ public class MessageActivity extends Activity {
                         progressDialog.dismiss();
                         prefEditor.remove(CommonUtilities.LOGGED_IN_PREF);
                         prefEditor.commit();
-                        Intent i = new Intent(MessageActivity.this, LoginActivity.class);
+                        Intent i = new Intent(TitleActivity.this, LoginActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                         finish();
