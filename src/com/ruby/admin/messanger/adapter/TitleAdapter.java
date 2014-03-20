@@ -26,6 +26,10 @@ public class TitleAdapter extends BaseAdapter {
         this.titleList = titleList;
     }
 
+    public void setTitleList(List<String> titleList) {
+        this.titleList = titleList;
+    }
+
     public int getCount() {
         return titleList.size();
     }

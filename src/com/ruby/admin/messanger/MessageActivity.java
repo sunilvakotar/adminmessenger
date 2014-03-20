@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.ruby.admin.messanger.adapter.MessageAdapter;
 import com.ruby.admin.messanger.adapter.TitleAdapter;
 import com.ruby.admin.messanger.bean.Message;
@@ -34,6 +35,7 @@ public class MessageActivity extends Activity {
     private Integer userId;
     private String username;
     private String password;
+    private String title;
 
     private ListView titleListView;
     private List<String> titleList = new ArrayList<String>();
@@ -64,7 +66,7 @@ public class MessageActivity extends Activity {
 
         Bundle extra = getIntent().getExtras();
 
-        if(extra != null){
+       /* if(extra != null){
             userId = extra.getInt("userId");
             username = extra.getString("username");
             password = extra.getString("password");
@@ -80,23 +82,21 @@ public class MessageActivity extends Activity {
             password = prefs.getString(CommonUtilities.PASSWORD_PREF, null);
             new InitGCM().initGcmRegister(MessageActivity.this, username);
             new UserCheck().execute(new Object());
+        }*/
+
+        username = prefs.getString(CommonUtilities.USERNAME_PREF, null);
+        if(extra != null){
+            title = extra.getString("title");
+            if(title != null){
+                dataSource = new MessageDataSource(this);
+                dataSource.open();
+                messageList = dataSource.getAllMessagesByUser(username, title);
+                messageAdapter = new MessageAdapter(MessageActivity.this, messageList);
+                messageListView.setAdapter(messageAdapter);
+                messageAdapter.notifyDataSetChanged();
+            }
         }
 
-        dataSource = new MessageDataSource(this);
-        dataSource.open();
-      /*  messageList = dataSource.getAllMessagesByUser(username);
-        messageAdapter = new MessageAdapter(MessageActivity.this, messageList);
-        messageListView.setAdapter(messageAdapter);
-        messageAdapter.notifyDataSetChanged();*/
-
-        // title
-        titleList = dataSource.getAllTitle();
-        titleListView = (ListView) findViewById(R.id.messageList);
-        titleAdapter = new TitleAdapter(MessageActivity.this, titleList);
-        titleListView.setAdapter(titleAdapter);
-        titleAdapter.notifyDataSetChanged();
-
-        //title start
         boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
         if(!isLoggedIn){
             Intent i = new Intent(MessageActivity.this, LoginActivity.class);
@@ -111,6 +111,18 @@ public class MessageActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 
     /**

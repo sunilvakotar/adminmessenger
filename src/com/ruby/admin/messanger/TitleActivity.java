@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.ruby.admin.messanger.adapter.TitleAdapter;
 import com.ruby.admin.messanger.db.MessageDataSource;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
@@ -73,6 +76,20 @@ public class TitleActivity extends Activity {
         // title
         titleList = dataSource.getAllTitle();
         titleListView = (ListView) findViewById(R.id.messageList);
+        titleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                String title = (String) parent.getItemAtPosition(position);
+                Intent i = new Intent(TitleActivity.this, MessageActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("title", title);
+                i.putExtras(bundle);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
         titleAdapter = new TitleAdapter(TitleActivity.this, titleList);
         titleListView.setAdapter(titleAdapter);
         titleAdapter.notifyDataSetChanged();
@@ -85,6 +102,15 @@ public class TitleActivity extends Activity {
             startActivity(i);
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Toast.makeText(TitleActivity.this, "onResume", Toast.LENGTH_LONG).show();
+        titleList = dataSource.getAllTitle();
+        titleAdapter.setTitleList(titleList);
+        titleAdapter.notifyDataSetChanged();
     }
 
     @Override

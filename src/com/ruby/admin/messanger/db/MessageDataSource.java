@@ -65,9 +65,9 @@ public class MessageDataSource {
         return messages;
     }
 
-    public List<Message> getAllMessagesByUser(String username){
+    public List<Message> getAllMessagesByUser(String username, String title){
         List<Message> messages = new ArrayList<Message>();
-        Cursor cursor = database.query(Constant.TABLE_MESSAGE, messageColumns, Constant.USER_NAME + " = '" + username+"'", null, null,
+        Cursor cursor = database.query(Constant.TABLE_MESSAGE, messageColumns, Constant.USER_NAME + " = '" + username+"' and "+ Constant.TITLE + " = '"+title+"'", null, null,
                 null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){

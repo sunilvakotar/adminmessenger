@@ -48,7 +48,7 @@ public class LoginActivity extends Activity {
         prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
         boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
         if(isLoggedIn){
-            Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+            Intent i = new Intent(LoginActivity.this, TitleActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
@@ -145,8 +145,10 @@ public class LoginActivity extends Activity {
                     if(userId != null){
                         if(userId == 0){
                             msgText.setText("* Username Or Password Incorrect");
+                        }else if(userId == -1){
+                            msgText.setText("* User already logged in with another device. Please Logout from another device and try again.");
                         }else{
-                            Intent i = new Intent(LoginActivity.this, MessageActivity.class);
+                            Intent i = new Intent(LoginActivity.this, TitleActivity.class);
                             i.putExtra("userId", userId);
                             i.putExtra("username", loginId);
                             i.putExtra("password", password);
