@@ -13,5 +13,8 @@ public class Constant {
     public static final String TITLE = "title";
     public static final String DATE = "date";
     public static final String USER_NAME = "username";
+
+    public static final String PROPERTY_REG_ID = "com.ruby.admin.messanger.registration_id";
+    public static final String PROPERTY_APP_VERSION = "1.0";
 	
 }

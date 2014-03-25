@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.ruby.admin.messanger.constant.Constant;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.soap.SoapWebServiceInfo;
 import com.ruby.admin.messanger.soap.SoapWebServiceUtility;
@@ -29,8 +30,7 @@ public class LoginActivity extends Activity {
 
     private String loginId;
     private String password;
-    private int UserID;
-    private String UserName;
+    private String regId;
     private ProgressDialog progressDialog;
     private String result;
     private TextView msgText;
@@ -47,6 +47,7 @@ public class LoginActivity extends Activity {
 
         prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
         boolean isLoggedIn = prefs.getBoolean(CommonUtilities.LOGGED_IN_PREF, false);
+        regId = prefs.getString(Constant.PROPERTY_REG_ID, "");
         if(isLoggedIn){
             Intent i = new Intent(LoginActivity.this, TitleActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -124,10 +125,10 @@ public class LoginActivity extends Activity {
         }
 
         protected String doInBackground(Object... parametros) {
-            Log.d(TAG, "Executando doInBackground de Login");
-            if (loginId != "" && password != "") {
+            Log.d(TAG, "doInBackground Login");
+            if (!loginId.equals("") && !password.equals("")) {
                 String envelop = String.format(
-                        SoapWebServiceInfo.LOGIN_ENVELOPE, loginId, password);
+                        SoapWebServiceInfo.LOGIN_ENVELOPE, loginId, password, regId);
                 result = SoapWebServiceUtility.callWebService(envelop,
                         SoapWebServiceInfo.LOGIN_SOAP_ACTION,
                         SoapWebServiceInfo.LOGIN_RESULT_TAG);
@@ -146,7 +147,7 @@ public class LoginActivity extends Activity {
                         if(userId == 0){
                             msgText.setText("* Username Or Password Incorrect");
                         }else if(userId == -1){
-                            msgText.setText("* User already logged in with another device. Please Logout from another device and try again.");
+                            msgText.setText("* You are already logged in from another device.");
                         }else{
                             Intent i = new Intent(LoginActivity.this, TitleActivity.class);
                             i.putExtra("userId", userId);

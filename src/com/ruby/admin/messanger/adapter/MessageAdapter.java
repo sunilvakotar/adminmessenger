@@ -1,6 +1,7 @@
 package com.ruby.admin.messanger.adapter;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class MessageAdapter extends BaseAdapter {
         }
         Message message = messageList.get(position);
         TextView messageText = (TextView) row.findViewById(R.id.messageText);
-        messageText.setText(message.getMessage());
+        messageText.setText(Html.fromHtml(message.getMessage()));
 
         TextView date = (TextView) row.findViewById(R.id.dateText);
         date.setText(message.getDate());

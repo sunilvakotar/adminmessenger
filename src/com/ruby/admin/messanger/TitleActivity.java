@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.ruby.admin.messanger.adapter.TitleAdapter;
+import com.ruby.admin.messanger.constant.Constant;
 import com.ruby.admin.messanger.db.MessageDataSource;
 import com.ruby.admin.messanger.gcm.CommonUtilities;
 import com.ruby.admin.messanger.gcm.InitGCM;
@@ -32,6 +33,7 @@ public class TitleActivity extends Activity {
     private Integer userId;
     private String username;
     private String password;
+    private String regId;
 
     private ListView titleListView;
     private List<String> titleList = new ArrayList<String>();
@@ -49,6 +51,7 @@ public class TitleActivity extends Activity {
 
         prefs = getSharedPreferences(CommonUtilities.SHARED_PREF_NAME, mode);
         prefEditor = prefs.edit();
+        regId = prefs.getString(Constant.PROPERTY_REG_ID, "");
 
         Bundle extra = getIntent().getExtras();
 
@@ -233,12 +236,12 @@ public class TitleActivity extends Activity {
     private String result;
     class UserCheck extends AsyncTask<Object, Void, String> {
 
-        private final static String TAG = "MessageActivity.UserCheck";
+        private final static String TAG = "TitleActivity.UserCheck";
 
         protected void onPreExecute() {
             super.onPreExecute();
             Log.d(TAG, "onPreExecute");
-            /*progressDialog = ProgressDialog.show(MessageActivity.this,
+            /*progressDialog = ProgressDialog.show(TitleActivity.this,
                     "", "Loading..", true, false);*/
         }
 
@@ -246,7 +249,7 @@ public class TitleActivity extends Activity {
             Log.d(TAG, "doInBackground for Login check");
             if (username != null && password != null) {
                 String envelop = String.format(
-                        SoapWebServiceInfo.LOGIN_ENVELOPE, username, password);
+                        SoapWebServiceInfo.LOGIN_ENVELOPE, username, password, regId);
                 result = SoapWebServiceUtility.callWebService(envelop,
                         SoapWebServiceInfo.LOGIN_SOAP_ACTION,
                         SoapWebServiceInfo.LOGIN_RESULT_TAG);
@@ -264,6 +267,8 @@ public class TitleActivity extends Activity {
                     boolean isUserExist = true;
                     if(userId != null){
                         if(userId == 0){
+                            isUserExist = false;
+                        }else if(userId == -1){
                             isUserExist = false;
                         }
                     }else{
